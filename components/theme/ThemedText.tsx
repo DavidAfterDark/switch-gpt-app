@@ -14,15 +14,14 @@ export function ThemedText({
   lightColor,
   darkColor,
   type = 'default',
-  colorType = 'primary',
   ...rest
 }: ThemedTextProps) {
   const color = useThemeColor(
     {
-      light: lightColor ?? (colorType === 'primary' ? Colors.light.text : Colors.light.textSecondary),
-      dark: darkColor ?? (colorType === 'primary' ? Colors.dark.text : Colors.dark.textSecondary)
+      light: lightColor ?? Colors.light.textColor100,
+      dark: darkColor ?? Colors.dark.textColor100
     },
-    'text'
+    'textColor100'
   )
 
   return (
