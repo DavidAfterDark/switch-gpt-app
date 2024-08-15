@@ -43,7 +43,7 @@ export default function BottomLoginSheet() {
       </Link>
 
       <Link href={{ pathname: '/login', params: { type: 'login' } }} asChild>
-        <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
+        <TouchableOpacity activeOpacity={0.5}>
           <ThemedView style={[styles.button, styles.buttonOutline]} lightColor={'transparent'} darkColor={Colors.light.backgroundColor100}>
             <ThemedText lightColor={Colors.light.textColor100} darkColor={Colors.light.textColor100}>Log in</ThemedText>
           </ThemedView>
