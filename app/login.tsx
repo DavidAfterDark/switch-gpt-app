@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { StyleSheet, KeyboardAvoidingView, Platform, useColorScheme, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, KeyboardAvoidingView, Platform, useColorScheme, TextInput, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native'
 import { useLocalSearchParams } from 'expo-router'
 import { ThemedText, ThemedView } from '@/components/theme'
 import { Colors } from '@/constants/Colors'
 import { EMAIL_REGEX } from '@/constants/regex'
 import { Controller, useForm } from 'react-hook-form'
+import { useSignIn, useSignUp } from '@clerk/clerk-expo'
 
 //  components
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -15,38 +16,80 @@ export interface LoginInterface {
 }
 
 export default function Login() {
-  const { type } = useLocalSearchParams<{ type: string }>()
+  const { type } = useLocalSearchParams<{ type: 'login' | 'register' }>()
 
   const { control, handleSubmit } = useForm<LoginInterface>()
 
   const colorScheme = useColorScheme()
 
+  const { signUp, isLoaded: signUpIsLoaded, setActive: signUpSetActive } = useSignUp()
+
+  const { signIn, isLoaded: signInIsLoaded, setActive: signInSetActive } = useSignIn()
+
   const [loading, setLoading] = useState<boolean>(false)
 
   const [focus, setFocus] = useState({ email: false, password: false })
 
-  const onFocus = (type: 'email' | 'password') => {
-    if (type === 'email') {
+  const onFocus = (inputType: 'email' | 'password') => {
+    if (inputType === 'email') {
       setFocus({ ...focus, email: true })
     }
 
-    if (type === 'password') {
+    if (inputType === 'password') {
       setFocus({ ...focus, password: true })
     }
   }
 
-  const onBlur = (type: 'email' | 'password') => {
-    if (type === 'email') {
+  const onBlur = (inputType: 'email' | 'password') => {
+    if (inputType === 'email') {
       setFocus({ ...focus, email: false })
     }
 
-    if (type === 'password') {
+    if (inputType === 'password') {
       setFocus({ ...focus, password: false })
     }
   }
 
-  const onSubmit = (data: LoginInterface) => {
-    console.log(data)
+  const onSubmit = async (data: LoginInterface) => {
+    if (type === 'register') {
+      if (!signUpIsLoaded) return
+
+      setLoading(true)
+
+      try {
+        const results = await signUp.create({ emailAddress: data.email, password: data.password })
+
+        signUpSetActive({
+          session: results.createdSessionId
+        })
+      } catch (error: any) {
+        console.log('[register error]: ', error.errors)
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        Alert.alert('', error?.errors[0]?.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (type === 'login') {
+      if (!signInIsLoaded) return
+
+      setLoading(true)
+
+      try {
+        const completeSignIn = await signIn.create({ identifier: data.email, password: data.password })
+
+        await signInSetActive({ session: completeSignIn.createdSessionId })
+      } catch (error: any) {
+        console.log('[signIn error]: ', error.errors)
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        Alert.alert(error.errors[0].message)
+      } finally {
+        setLoading(false)
+      }
+    }
   }
 
   return (
