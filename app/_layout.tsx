@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '@/constants/Colors'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import * as SecureStore from 'expo-secure-store'
+import { esES } from '@clerk/localizations'
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? ''
 
@@ -73,15 +74,13 @@ const InitialLayout = () => {
   useEffect(() => {
     if (!isLoaded) return
 
-    const segment = segments[0]
+    const inAuthGroup = segments[0] === '(auth)'
 
-    console.log('[segment]: ', segment)
-
-  //   if (isSignedIn && !inAuthGroup) {
-  //     router.replace('/(auth)/(drawer)/(chat)/new')
-  //   } else if (!isSignedIn) {
-  //     router.replace('/')
-  //   }
+    if (isSignedIn && !inAuthGroup) {
+      router.replace('/(auth)/')
+    } else if (!isSignedIn) {
+      router.replace('/')
+    }
   }, [isSignedIn])
 
   if (!loaded || !isLoaded) {
@@ -97,6 +96,7 @@ const InitialLayout = () => {
             headerShown: false
           }}
         />
+
         <Stack.Screen
           name="login"
           options={{
@@ -115,6 +115,14 @@ const InitialLayout = () => {
             headerShadowVisible: false
           }}
         />
+
+        <Stack.Screen
+          name='(auth)'
+          options={{
+            headerShown: false
+          }}
+        />
+
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
@@ -123,7 +131,7 @@ const InitialLayout = () => {
 
 export default function RootLayout() {
   return (
-    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache} localization={esES}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <InitialLayout />
       </GestureHandlerRootView>
