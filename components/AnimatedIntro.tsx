@@ -6,7 +6,7 @@ import { ReText } from 'react-native-redash'
 const CONTENT = [
   {
     title: 'OpenAI',
-    bg: '#D7FFD4',
+    bg: '#D76666',
     fontColor: '#F655FF'
   },
   {
@@ -212,6 +212,6 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   content: {
-    marginTop: 300
+    marginTop: 250
   }
 })
