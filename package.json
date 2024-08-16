@@ -19,6 +19,7 @@
     "@clerk/localizations": "^2.5.8",
     "@clerk/types": "^4.13.0",
     "@expo/vector-icons": "^14.0.2",
+    "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.0.2",
     "expo": "~51.0.25",
     "expo-constants": "~16.0.2",
