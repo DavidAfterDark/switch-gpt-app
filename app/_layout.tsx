@@ -1,11 +1,11 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
-import { Slot, Stack, useRouter, useSegments } from 'expo-router'
+import { Stack, useRouter, useSegments } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
 import { useColorScheme } from '@/hooks/useColorScheme'
-import { TouchableOpacity } from 'react-native'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '@/constants/Colors'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -84,7 +84,11 @@ const InitialLayout = () => {
   }, [isSignedIn])
 
   if (!loaded || !isLoaded) {
-    return <Slot />
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size='large' />
+      </View>
+    )
   }
 
   return (
